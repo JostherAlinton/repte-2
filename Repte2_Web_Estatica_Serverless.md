@@ -4,7 +4,7 @@
 
 Abans d'escriure cap línia de codi, he dissenyat el flux de dades del formulari:
 
-```
+```text
 [Navegador de l'usuari]
         │
         │ 1. L'usuari omple el formulari i clica "Enviar"
@@ -32,7 +32,7 @@ Abans d'escriure cap línia de codi, he dissenyat el flux de dades del formulari
 
 ## 2. Estructura del Projecte
 
-```
+```text
 repte-2/
 ├── .github/
 │   └── workflows/
@@ -44,12 +44,7 @@ repte-2/
 ├── lambda/
 │   └── contact_handler.js     ← Funció Lambda: rep el formulari i guarda a DynamoDB
 └── terraform/
-    ├── provider.tf            ← Configuració del provider AWS
-    ├── variables.tf           ← Variables (regió, nom del projecte, token GitHub)
-    ├── dynamodb.tf            ← Taula DynamoDB per guardar missatges
-    ├── lambda.tf              ← Funció Lambda i el seu empaquetat ZIP
-    ├── api_gateway.tf         ← API REST amb endpoint POST /contact
-    └── outputs.tf             ← Mostra la URL de l'API un cop desplegada
+    └── main.tf                ← Tota la infraestructura AWS (API Gateway, Lambda, DynamoDB) unificada
 ```
 
 ---
@@ -72,7 +67,7 @@ repte-2/
 
 El handler rep l'event d'API Gateway, parseja el body JSON, el valida i crida `PutItemCommand` de DynamoDB per crear un nou element amb un ID basat en el timestamp actual.
 
-### DynamoDB: `terraform/dynamodb.tf`
+### Backend i Infraestructura Unificada al núvol: `terraform/main.tf`
 
 He triat DynamoDB en comptes de RDS per un motiu clau: **els missatges d'un formulari de contacte són dades simples i sense relacions entre elles**. No hi ha `JOIN`s, ni relacions de clau forana, ni esquemes complexos. DynamoDB és perfecte per a aquest cas:
 
@@ -81,9 +76,7 @@ He triat DynamoDB en comptes de RDS per un motiu clau: **els missatges d'un form
 
 Si haguéssim utilitzat RDS, hauríem de mantenir una instància corrent les 24h, amb el cost corresponent (~$15-25/mes de mínim).
 
-### API Gateway: `terraform/api_gateway.tf`
-
-He creat una API REST bàsica amb un sol recurs (`/contact`) i un sol mètode (`POST`). El punt més important és que he triat la integració de tipus **`AWS_PROXY`**: significa que API Gateway envia l'event HTTP complet (headers, body, IP del client...) directament a la Lambda, sense transformar res. Això és el setup més estàndard i fàcil d'entendre.
+He creat una API REST bàsica al mateix `main.tf` amb un sol recurs (`/contact`) i un sol mètode (`POST`). El punt més important és que he triat la integració de tipus **`AWS_PROXY`**: significa que API Gateway envia l'event HTTP complet (headers, body, IP del client...) directament a la Lambda, sense transformar res. Això és el setup més estàndard i fàcil d'entendre.
 
 ### GitHub Actions: `.github/workflows/ci-cd.yml`
 
@@ -126,7 +119,7 @@ El simple fet de fer `git push origin main` activarà el workflow de GitHub Acti
 
 Un cop el Terraform hagi acabat, al log del GitHub Action veuràs:
 
-```
+```text
 api_gateway_endpoint = "https://abc123.execute-api.us-east-1.amazonaws.com/prod/contact"
 ```
 
@@ -164,7 +157,7 @@ return response(200, { success: true, id }); // Retorna OK... però no ha desat 
 2. Cercar `/aws/lambda/portfolio-repte2-contact-handler`.
 3. Al log de l'última invocació veuràs: `Missatge guardat amb ID: ...` però... si afegim un `console.log` abans del `send` i un altre just després:
 
-```
+```text
 [LOG] Guardant missatge...
 [LOG] ← (Aquí no apareix res, perquè la línia del 'send' estava comentada)
 ```
@@ -178,7 +171,7 @@ Amb les línies de log ben col·locades, és fàcil saber exactament on s'ha atu
 ### Diferència entre Amplify i S3+CloudFront per servir contingut estàtic
 
 | Característica | AWS Amplify | S3 + CloudFront |
-|---|---|---|
+| --- | --- | --- |
 | **Facilitat** | Molt fàcil, connecta directament amb GitHub | Requereix configurar el bucket + distribució + invalidació de cache |
 | **CI/CD integrat** | ✅ Sí, automàtic per branca | ❌ Cal configurar-ho manualment (ex: GitHub Actions) |
 | **Preu** | Paguem per build i per GB servit (~$0.01/min build) | Només paguem per S3 i per transferència CloudFront (més barat per a grans volums) |
