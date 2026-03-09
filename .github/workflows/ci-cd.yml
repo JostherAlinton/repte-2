@@ -56,8 +56,8 @@ jobs:
 
       - name: Terraform Plan (Veure els canvis)
         working-directory: terraform
-        run: terraform plan -var="github_token=${{ secrets.GH_TOKEN }}"
+        run: terraform plan
 
       - name: Terraform Apply (Aplicar els canvis)
         working-directory: terraform
-        run: terraform apply -auto-approve -var="github_token=${{ secrets.GH_TOKEN }}"
+        run: terraform apply -auto-approve
