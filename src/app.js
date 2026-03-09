@@ -6,21 +6,21 @@
  */
 
 // ⬇️ CANVIA AQUESTA URL per la que et mostri el 'outputs.tf' un cop fet 'terraform apply'
-const API_ENDPOINT = "https://XXXXXXXXXX.execute-api.us-east-1.amazonaws.com/prod/contact";
+const API_ENDPOINT = "https://o02ddi9ijk.execute-api.us-east-1.amazonaws.com/prod/contact";
 
 // Esperem que la pàgina s'hagi carregat completament
 document.addEventListener("DOMContentLoaded", () => {
-    const form      = document.getElementById("contactForm");
+    const form = document.getElementById("contactForm");
     const submitBtn = document.getElementById("submitBtn");
-    const msgEl     = document.getElementById("formMsg");
+    const msgEl = document.getElementById("formMsg");
 
     form.addEventListener("submit", async (event) => {
         // Evitem que la pàgina es recarregui (comportament per defecte del formulari HTML)
         event.preventDefault();
 
         // Recollim els valors dels camps del formulari
-        const name    = document.getElementById("name").value.trim();
-        const email   = document.getElementById("email").value.trim();
+        const name = document.getElementById("name").value.trim();
+        const email = document.getElementById("email").value.trim();
         const message = document.getElementById("message").value.trim();
 
         // Validació bàsica
@@ -36,22 +36,22 @@ document.addEventListener("DOMContentLoaded", () => {
         try {
             // Enviem les dades al backend (API Gateway → Lambda → DynamoDB)
             const response = await fetch(API_ENDPOINT, {
-                method:  "POST",
+                method: "POST",
                 headers: { "Content-Type": "application/json" },
-                body:    JSON.stringify({ name, email, message })
+                body: JSON.stringify({ name, email, message })
             });
 
             if (response.ok) {
-                showMsg("✅ Missatge enviat correctament! Et respondré aviat.", "success");
+                showMsg("Missatge enviat correctament! Et respondré aviat.", "success");
                 form.reset();
             } else {
-                // La Lambda ens ha tornat un error HTTP (4xx o 5xx)
-                showMsg("❌ Error del servidor. Torna-ho a intentar.", "error");
+                // La Lambda ens ha tornat un error
+                showMsg("Error del servidor. Torna-ho a intentar.", "error");
             }
         } catch (err) {
             // Error de xarxa (ex: no hi ha connexió o la URL és incorrecta)
             console.error("Error de xarxa:", err);
-            showMsg("❌ No s'ha pogut connectar al servidor.", "error");
+            showMsg("No s'ha pogut connectar al servidor.", "error");
         } finally {
             // Tornem a activar el botó
             submitBtn.disabled = false;
@@ -62,6 +62,6 @@ document.addEventListener("DOMContentLoaded", () => {
     /** Mostra un missatge de feedback a l'usuari */
     function showMsg(text, type) {
         msgEl.textContent = text;
-        msgEl.className   = `form-feedback ${type}`;
+        msgEl.className = `form-feedback ${type}`;
     }
 });

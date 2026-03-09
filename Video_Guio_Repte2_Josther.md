@@ -1,35 +1,43 @@
-# Guió del Vídeo: Repte 2 - Web Estàtica Serverless
+# Guion del Vídeo: Reto 2 - Web Estática Serverless
 
 **Presentador:** Josther Ozuna
 
 ---
 
-## 1. Flux de Dades del Formulari
+## 1. Flujo de Datos del Formulario
 
-* **Visual:** Mostra un esquema bàsic a la pantalla o l'arxiu `app.js` on envies les dades.
-* **Josther (Veu):** "Hola, soc el Josther. Abans de programar res, vaig dissenyar com viatjaria la informació del formulari. El flux és molt simple: el client (el navegador) envia les dades al nostre API Gateway. Aquest actua de proxy i li passa la petició tal qual a una funció Lambda. Llavors, la Lambda fa la feina de processar i processar les dades, guardant-les en una base de dades DynamoDB."
+* **Visual:** Muestra un esquema básico en la pantalla o el archivo `app.js` donde envías los datos.
+* **Josther (Voz):** "Hola, soy Josther. Antes de programar nada, diseñé cómo viajaría la información del formulario. El flujo es muy simple: el cliente (el navegador) envía los datos a nuestro API Gateway. Este actúa de proxy y le pasa la petición tal cual a una función Lambda. Entonces, la Lambda hace el trabajo de procesar los datos, guardándolos en una base de datos DynamoDB."
 
-## 2. Elecció del Runtime de Lambda
+## 2. Elección del Runtime de Lambda
 
-* **Visual:** Codi de la Lambda o la configuració a Terraform.
-* **Josther (Veu):** "A la Lambda he triat utilitzar Node.js en comptes de Python. Com que la part web ja utilitzava JavaScript, era molt més senzill i pràctic per mi mantenir el mateix llenguatge al backend. A més, per scripts així de curts, Node.js és molt ràpid per arrencar, el que a AWS anomenen 'cold start', assegurant que respon gairebé a l'instant."
+* **Visual:** Código de la Lambda o la configuración en Terraform.
+* **Josther (Voz):** "En la Lambda he elegido utilizar Node.js en vez de Python. Como la parte web ya utilizaba JavaScript, era mucho más sencillo y práctico para mí mantener el mismo lenguaje en el backend. Además, para scripts así de cortos, Node.js es muy rápido para arrancar, lo que en AWS llaman 'cold start', asegurando que responda casi al instante."
 
-## 3. Error Deliberat i CloudWatch Logs
+## 3. Error Deliberado y CloudWatch Logs
 
-* **Visual:** Codi amb la línia comentada i després mostrant els registres a CloudWatch de AWS.
-* **Josther (Veu):** "Per ensenyar com diagnosticar un error quan estem treballant al núvol, he comentat a propòsit la línia del codi que desa la dada a DynamoDB. Això fa que el servidor em digui que tot ha anat bé, però no es guarda res.  Per esbrinar per què, vaig anar a veure els AWS CloudWatch Logs. Afegint uns simples `console.log()` he pogut veure al registre on es parava exactament la meva funció, confirmant ràpidament l'error sense necessitat d'especular."
+* **Visual:** Código con la línea comentada y después mostrando los registros en CloudWatch de AWS.
+* **Josther (Voz):** "Para enseñar cómo diagnosticar un error cuando estamos trabajando en la nube, he comentado a propósito la línea del código que guarda el dato en DynamoDB. Esto hace que el servidor me diga que todo ha ido bien, pero no se guarda nada. Para averiguar por qué, fui a ver los AWS CloudWatch Logs. Añadiendo unos simples `console.log()` he podido ver en el registro dónde se paraba exactamente mi función, confirmando rápidamente el error sin necesidad de especular."
 
 ## 4. Amplify vs S3+CloudFront
 
-* **Visual:** La consola d'AWS Amplify o el resum del pipeline al teu GitHub.
-* **Josther (Veu):** "A l'hora de publicar la meva web HTML i CSS estàtica, he usat Amplify enlloc de la mítica dupla de `S3 + CloudFront`. La diferència principal és que Amplify es connecta automàticament al meu GitHub i m'actualitza la pàgina sol cada cop que faig un *push*. `S3 + CloudFront` requereix que t'ho muntis tot a mà per fer això; està bé si controles molt o per rebaixar cèntims sent una empresa gegant, però per a un projecte senzill com el meu, Amplify és la millor eina per estalviar maldecaps."
+* **Visual:** La consola de AWS Amplify o el resumen del pipeline en tu GitHub.
+* **Josther (Voz):** "A la hora de publicar mi web HTML y CSS estática, he usado Amplify en lugar de la mítica dupla de `S3 + CloudFront`. La diferencia principal es que Amplify se conecta automáticamente a mi GitHub y me actualiza la página solo cada vez que hago un *push*. `S3 + CloudFront` requiere que te lo montes todo a mano para hacer esto; está bien si controlas mucho o para rebajar céntimos siendo una empresa gigante, pero para un proyecto sencillo como el mío, Amplify es la mejor herramienta para ahorrar dolores de cabeza."
 
-## 5. Cost de l'Arquitectura: 10K vs 1M visites
+## 5. Coste de la Arquitectura: 10K vs 1M visitas
 
-* **Visual:** Una pissarra o el bloc de notes amb les diferències al voltant de 0.5$ i 7$.
-* **Josther (Veu):** "Hem de parlar de diners. Com que l'arquitectura és completament serverless, si la web només tingués unes 10.000 visites mensuals AWS potser ens costaria uns 50 cèntims ($0.50). Pràcticament gratis donat que l'activitat en Dynamo API Gateway és en modalitat de 'paga-sol-el-que-riddles'. Fins i tot si fóssim super famosos i tinguéssim 1.000.000 de visites, la factura de Cloud ens suposarien tot just 7 dòlars mensuals gràcies a no tenir cap servidor web encès. Més barat, impossible."
+* **Visual:** Una pizarra o el bloc de notas con las diferencias de alrededor de 0.5$ y 7$.
+* **Josther (Voz):** "Tenemos que hablar de dinero. Como la arquitectura es completamente serverless, si la web solo tuviera unas 10.000 visitas mensuales AWS quizás nos costaría unos 50 céntimos ($0.50). Prácticamente gratis dado que la actividad en Dynamo API Gateway es en modalidad de 'paga-solo-lo-que-usas'. Incluso si fuésemos súper famosos y tuviéramos 1.000.000 de visitas, la factura de Cloud nos supondría apenas 7 dólares mensuales gracias a no tener ningún servidor web encendido. Más barato, imposible."
 
-## 6. Per què DynamoDB i no RDS?
+## 6. ¿Por qué DynamoDB y no RDS?
 
-* **Visual:** La consola aws DynamoDB o el codi simplificat Terraform del `main.tf`.
-* **Josther (Veu):** "Finalment, per què he guardat els missatges de contacte a DynamoDB i no pas a un clàssic servidor de dades de PostgreSQL a RDS? Sincerament, molt fàcil. Les meves dades són nom i un text de missatge solt. No existeixen relacions, esquemes grans i no ens calen taules creuades. Amb RDS, hauria d'apagar una instància i tenir un ordinador sencer dedicat corrent i gastant diners 24 hores. Amb DynamoDB tinc el mode sota demanda de cost 0 base i per un formulari estilitzat servex i sobra."
+* **Visual:** La consola aws DynamoDB o el código simplificado Terraform del `main.tf`.
+* **Josther (Voz):** "Finalmente, ¿por qué he guardado los mensajes de contacto en DynamoDB y no en un clásico servidor de datos de PostgreSQL en RDS? Sinceramente, muy fácil. Mis datos son nombre y un texto de mensaje suelto. No existen relaciones, esquemas grandes y no nos hacen falta tablas cruzadas. Con RDS, tendría que hospedar una instancia y tener un ordenador entero dedicado corriendo y gastando dinero 24 horas. Con DynamoDB tengo el modo bajo demanda de coste 0 base y para un formulario simple sirve y sobra."
+
+## 7. Apuntes Rápidos del Código
+
+* **Visual:** Muestra rápido partes del `app.js` de la web, `contact_handler.js` o el Terraform `main.tf`.
+* **Josther (Voz):** "Y para terminar, os doy 3 apuntes clave que hacen funcionar el código sin entrar en detalles complejos:
+  * **En la web (`app.js`):** Uso la función `fetch()` de JavaScript para agarrar lo que la persona escribe y mandarlo a mi API en un formato paquete llamado JSON.
+  * **En el backend (`contact_handler.js`):** Mi Lambda de AWS recibe ese paquete de texto JSON, mira que no venga en blanco y lanza un comando (`PutItemCommand`) para meter directamente la fila en la tabla de DynamoDB.
+  * **En la infraestructura (`main.tf`):** Puse en Terraform que mi API Gateway use el modo `AWS_PROXY`. Esto significa que el API Gateway no analiza ni toca nada, solo actúa de tubo que pasa los datos directos entre la web y la Lambda. Así de fácil y rápido."
