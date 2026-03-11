@@ -6,7 +6,7 @@
  */
 
 // ⬇️ CANVIA AQUESTA URL per la que et mostri el 'outputs.tf' un cop fet 'terraform apply'
-const API_ENDPOINT = "https://o02ddi9ijk.execute-api.us-east-1.amazonaws.com/prod/contact";
+const API_ENDPOINT = "https://adnmdxv1xa.execute-api.us-east-1.amazonaws.com/prod/contact";
 
 // Esperem que la pàgina s'hagi carregat completament
 document.addEventListener("DOMContentLoaded", () => {
